@@ -1,43 +1,52 @@
+let draggedPiece = null;
 
-dragElement(document.getElementById("test"));
+function startDrag(e) {
+  e.preventDefault();
+  draggedPiece = e.target;
 
-function dragElement(Element) {
-    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-    if (document.getElementById(Element.id + "header")) {
-        // if present, header is where i move the div from
-        document.getElementById(Element.id + "header").onmousedown = dragMouseDown;
+  const clone = draggedPiece.cloneNode(true);
+  clone.classList.add('dragging');
+  clone.style.left = `${e.pageX}px`;
+  clone.style.top = `${e.pageY}px`;
+  document.body.appendChild(clone);
 
-    } else {
-        // just move it from anywhere else
-        Element.onmousedown = dragMouseDown
-    }
+  draggedPiece._clone = clone;
 
-    function dragMouseDown(e) {
-        e = e || window.Event; // cross browser compatiblity.
-        // e holds all of the properties of the event on click
-        // however, old browsers just cant fucking do it, so we have to consider the disabled
-        e.preventDefault(); // mouse at startup
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        document.onmouseup = closeDragElement;
-        document.onmousemove = elementDrag; // calls functions
-    }
-
-    function elementDrag(e) {
-        e = e || window.Event;
-        e.preventDefault();
-        //new cursor pos
-        pos1 = pos3 - e.clientX;
-        pos2 = pos4 - e.clientY
-        pos3 = e.clientX
-        pos4 = e.clientY
-        Element.style.top = (Element.offsetTop - pos2) + "px";
-        Element.style.left = (Element.offsetLeft - pos1) + "px"
-    }
-
-    function closeDragElement() {
-        document.onmouseup = null;
-        document.onmousemove = null; //stop!
-    }
+  document.addEventListener('mousemove', onDrag);
+  document.addEventListener('mouseup', endDrag);
 }
 
+function onDrag(e) {
+  if (!draggedPiece || !draggedPiece._clone) return;
+  const clone = draggedPiece._clone;
+  clone.style.left = `${e.pageX}px`;
+  clone.style.top = `${e.pageY}px`;
+}
+
+function endDrag(e) {
+  if (!draggedPiece || !draggedPiece._clone) return;
+
+  const clone = draggedPiece._clone;
+  const squares = document.querySelectorAll('.grid-square');
+
+  for (const square of squares) {
+    const rect = square.getBoundingClientRect();
+    if (
+      e.clientX >= rect.left &&
+      e.clientX <= rect.right &&
+      e.clientY >= rect.top &&
+      e.clientY <= rect.bottom
+    ) {
+      square.innerHTML = '';
+      square.appendChild(draggedPiece);
+      break;
+    }
+  }
+
+  clone.remove();
+  draggedPiece._clone = null;
+  draggedPiece = null;
+
+  document.removeEventListener('mousemove', onDrag);
+  document.removeEventListener('mouseup', endDrag);
+}
