@@ -1,5 +1,5 @@
 window.onload = function() {
-    
+
 const grid_data = Array(64).fill().map(() => []);
 const grid_container = document.getElementById('grid');
 
@@ -11,7 +11,7 @@ const piece_positions = [
   null,null,null,null,null,null,null,null,
   null,null,null,null,null,null,null,null,
   'wp','wp','wp','wp','wp','wp','wp','wp',
-  'wr','wn','wb','wq','wk','wb','wn','wr'
+  'wr','wn','wb','Boognish','wk','wb','wn','wr'
 ];
 
 piece_positions.forEach((code, index) => {
