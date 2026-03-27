@@ -52,26 +52,25 @@ class Bishop extends Piece {
 
   getLegalMoves(x, y, board) {
     const moves = [];
-    // left, right, up, down
+    // diagonal
     const directions = [
       [1, 1], [-1, 1],
       [1, -1], [-1, -1]
     ];
-    // for each direction walk until u bump into someone
     for (const [dx, dy] of directions) {
       let cx = x + dx;
       let cy = y + dy;
       while (cx >= 0 && cx < 8 && cy >= 0 && cy < 8) {
         if (board[cy][cx] === null) {
-          moves.push([cx, cy]); // empty square is valid
+          moves.push([cx, cy]);
         } else {
           if (board[cy][cx].color !== this.color) {
-            moves.push([cx, cy]); // if occupied, capture then stop
+            moves.push([cx, cy]); 
           }
           break;
         }
-        cx += dx; // slide until bump or end of board
-        cy += dy; // i used chat gpt for 15% of this ngl
+        cx += dx; 
+        cy += dy;
       }
     }
 
@@ -79,7 +78,40 @@ class Bishop extends Piece {
   }
 }
 
+class Queen extends Piece {
+  constructor(color) {
+    super(color, 'q');
+  }
 
+  getLegalMoves(x, y, board) {
+    const moves = [];
+    // mix of both bishop and rook
+    const directions = [
+      [1, 0], [-1, 0],
+      [0, 1], [0, -1],
+      [1, 1], [-1, 1],
+      [1, -1], [-1, -1]
+    ];
+    for (const [dx, dy] of directions) {
+      let cx = x + dx;
+      let cy = y + dy;
+      while (cx >= 0 && cx < 8 && cy >= 0 && cy < 8) {
+        if (board[cy][cx] === null) {
+          moves.push([cx, cy]); 
+        } else {
+          if (board[cy][cx].color !== this.color) {
+            moves.push([cx, cy]); 
+          }
+          break;
+        }
+        cx += dx; 
+        cy += dy; 
+      }
+    }
+
+    return moves;
+  }
+}
 
 class Pawn extends Piece {
   constructor(color) {
@@ -129,6 +161,7 @@ function createPiece(code) {
   if (type === 'r') return new Rook(color);
   if (type === 'p') return new Pawn(color);
   if (type == 'b') return new Bishop(color);
+  if (type == 'q') return new Queen(color);
   return new Piece(color, type); // other types are just garbage for now
 }
 
