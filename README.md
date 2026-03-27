@@ -5,9 +5,8 @@ TODO:
 - add pawn: DONE!
 - add bishop: Done
 - add queen: Done
-- add knight
-- add queen
-- add king
+- add knight: Done
+- add king: Done
 - add player turns and player clock
 - add checks and check mating
 - add en passant, castling, fifty move rule, threefold repetition
