@@ -113,6 +113,41 @@ class Queen extends Piece {
   }
 }
 
+class Knight extends Piece {
+  constructor(color) {
+    super(color, 'n');
+  }
+
+  getLegalMoves(x, y, board) {
+    const moves = [];
+    // always 2 in one direction, 1 in another. L shape
+    const directions = [
+      [2, 1], [1, 2],
+      [-1, 2], [-2, 1],
+      [-2, -1], [-1, -2],
+      [1, -2], [2, -1]
+    ];
+    for (const [dx, dy] of directions) {
+      let cx = x + dx;
+      let cy = y + dy;
+      while (cx >= 0 && cx < 8 && cy >= 0 && cy < 8) {
+        if (board[cy][cx] === null) {
+          moves.push([cx, cy]); 
+        } else {
+          if (board[cy][cx].color !== this.color) {
+            moves.push([cx, cy]); 
+          }
+          break;
+        }
+        cx += dx;
+        cy += cy;
+      }
+    }
+
+    return moves;
+  }
+}
+
 class Pawn extends Piece {
   constructor(color) {
     super(color, 'p');
@@ -162,6 +197,7 @@ function createPiece(code) {
   if (type === 'p') return new Pawn(color);
   if (type == 'b') return new Bishop(color);
   if (type == 'q') return new Queen(color);
+  if (type == 'n') return new Knight(color);
   return new Piece(color, type); // other types are just garbage for now
 }
 
