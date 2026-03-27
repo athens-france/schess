@@ -4,7 +4,7 @@ TODO:
 - add rook: DONE!
 - add pawn: DONE!
 - add bishop: Done
-- add queen
+- add queen: Done
 - add knight
 - add queen
 - add king
