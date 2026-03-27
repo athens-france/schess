@@ -148,6 +148,38 @@ class Knight extends Piece {
   }
 }
 
+class King extends Piece {
+  constructor(color) {
+    super(color, 'k');
+  }
+
+  getLegalMoves(x, y, board) {
+    const moves = [];
+  
+    const directions = [
+      [1, 0], [-1, 0], [0, 1], [0, -1],
+      [1, 1], [1, -1], [-1, 1], [-1, -1]
+    ];
+  
+    for (const [dx, dy] of directions) {
+      const cx = x + dx;
+      const cy = y + dy;
+  
+      // stay on board
+      if (cx < 0 || cx >= 8 || cy < 0 || cy >= 8) continue;
+  
+      const target = board[cy][cx];
+  
+      // empty square OR enemy piece
+      if (target === null || target.color !== this.color) {
+        moves.push([cx, cy]);
+      }
+    }
+  
+    return moves;
+  }
+}
+
 class Pawn extends Piece {
   constructor(color) {
     super(color, 'p');
