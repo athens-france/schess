@@ -45,6 +45,42 @@ class Rook extends Piece {
   }
 }
 
+class Bishop extends Piece {
+  constructor(color) {
+    super(color, 'b');
+  }
+
+  getLegalMoves(x, y, board) {
+    const moves = [];
+    // left, right, up, down
+    const directions = [
+      [1, 1], [-1, 1],
+      [1, -1], [-1, -1]
+    ];
+    // for each direction walk until u bump into someone
+    for (const [dx, dy] of directions) {
+      let cx = x + dx;
+      let cy = y + dy;
+      while (cx >= 0 && cx < 8 && cy >= 0 && cy < 8) {
+        if (board[cy][cx] === null) {
+          moves.push([cx, cy]); // empty square is valid
+        } else {
+          if (board[cy][cx].color !== this.color) {
+            moves.push([cx, cy]); // if occupied, capture then stop
+          }
+          break;
+        }
+        cx += dx; // slide until bump or end of board
+        cy += dy; // i used chat gpt for 15% of this ngl
+      }
+    }
+
+    return moves;
+  }
+}
+
+
+
 class Pawn extends Piece {
   constructor(color) {
     super(color, 'p');
@@ -92,6 +128,7 @@ function createPiece(code) {
 
   if (type === 'r') return new Rook(color);
   if (type === 'p') return new Pawn(color);
+  if (type == 'b') return new Bishop(color);
   return new Piece(color, type); // other types are just garbage for now
 }
 
