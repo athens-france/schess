@@ -8,20 +8,21 @@ function startDrag(e) {
   e.preventDefault(); // stop default browser dragging behavior 
   draggedPiece = e.target;
 
+    // check if game is active and piece belongs to current player
+  if (!isGameActive) {
+    return;
+  }
+
   originalX = parseInt(draggedPiece.getAttribute('data-x'));
   originalY = parseInt(draggedPiece.getAttribute('data-y'));
   const pieceObj = board[originalY][originalX];
 
+  if (pieceObj.color !== (current_player ? 'b' : 'w')) {
+    return;
+  }
+
   // calculate legal moves
   legalMoves = pieceObj.getLegalMoves(originalX, originalY, board);
-
-  // check if game is active and piece belongs to current player
-  if (!isGameActive) {
-    return;
-  }
-  if (pieceObj.color !== (current_player ? 'black' : 'white')) {
-    return;
-  }
 
   // highlight them
   document.querySelectorAll('.grid-square').forEach((sq, i) => {
