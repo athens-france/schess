@@ -15,6 +15,14 @@ function startDrag(e) {
   // calculate legal moves
   legalMoves = pieceObj.getLegalMoves(originalX, originalY, board);
 
+  // check if game is active and piece belongs to current player
+  if (!isGameActive) {
+    return;
+  }
+  if (pieceObj.color !== (current_player ? 'black' : 'white')) {
+    return;
+  }
+
   // highlight them
   document.querySelectorAll('.grid-square').forEach((sq, i) => {
     const sx = i % 8; // convert index to x coordinate
@@ -74,7 +82,11 @@ function endDrag(e) {
         draggedPiece.setAttribute('data-x', dropX);
         draggedPiece.setAttribute('data-y', dropY);
 
-        dropped = true; 
+        dropped = true;
+
+        if (dropped) {
+          switchTurn();
+        }
       }
       break;
     }
