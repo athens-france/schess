@@ -1,0 +1,13 @@
+simple chess programmed in Javascript
+TODO:
+- overhaul piece system with classes: DONE!
+- add rook: DONE!
+- add pawn: DONE!
+- add bishop: Done
+- add queen: Done
+- add knight: Done
+- add king: Done
+- add player turns and player clock
+- add checks and check mating
+- add en passant, castling, fifty move rule, threefold repetition
+- idk should be done after that
