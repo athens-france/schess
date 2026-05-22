@@ -11,6 +11,121 @@ class Piece {
   }
 }
 
+function cloneBoard(board) {
+  // shallow clone rows (fine because we only move piece object references)
+  return board.map(row => row.slice());
+}
+
+function findKing(board, color) {
+  for (let y = 0; y < 8; y++) {
+    for (let x = 0; x < 8; x++) {
+      const p = board[y][x];
+      if (p && p.type === 'k' && p.color === color) return [x, y];
+    }
+  }
+  return null;
+}
+
+function isSquareAttacked(board, targetX, targetY, byColor) {
+  for (let y = 0; y < 8; y++) {
+    for (let x = 0; x < 8; x++) {
+      const p = board[y][x];
+      if (!p || p.color !== byColor) continue;
+
+      if (p.type === 'p') {
+        const dir = byColor === 'w' ? -1 : 1;
+        const ax1 = x - 1, ay1 = y + dir;
+        const ax2 = x + 1, ay2 = y + dir;
+        if ((ax1 === targetX && ay1 === targetY) || (ax2 === targetX && ay2 === targetY)) {
+          return true;
+        }
+        continue;
+      }
+
+      // king attacks adjacent squares (don’t recurse into “legal moves”)
+      if (p.type === 'k') {
+        for (let dy = -1; dy <= 1; dy++) {
+          for (let dx = -1; dx <= 1; dx++) {
+            if (dx === 0 && dy === 0) continue;
+            if (x + dx === targetX && y + dy === targetY) return true;
+          }
+        }
+        continue;
+      }
+
+      const attacks = p.getLegalMoves(x, y, board);
+      if (attacks.some(([mx, my]) => mx === targetX && my === targetY)) return true;
+    }
+  }
+  return false;
+}
+
+function isKingInCheck(board, color) {
+  const kingPos = findKing(board, color);
+  if (!kingPos) return false; 
+  const [kx, ky] = kingPos;
+  const enemy = color === 'w' ? 'b' : 'w';
+  return isSquareAttacked(board, kx, ky, enemy);
+}
+
+
+function getLegalMovesConsideringCheck(piece, fromX, fromY, board) {
+  const pseudo = piece.getLegalMoves(fromX, fromY, board);
+  const legal = [];
+
+  for (const [toX, toY] of pseudo) {
+    const test = cloneBoard(board);
+
+    // simulate move
+    test[toY][toX] = test[fromY][fromX];
+    test[fromY][fromX] = null;
+
+    // keep move only if it does not leave my king in check
+    if (!isKingInCheck(test, piece.color)) {
+      legal.push([toX, toY]);
+    }
+  }
+
+  return legal;
+}
+
+function getAllLegalMovesForColor(board, color) {
+  const all = [];
+  for (let y = 0; y < 8; y++) {
+    for (let x = 0; x < 8; x++) {
+      const p = board[y][x];
+      if (!p || p.color !== color) continue;
+
+      const moves = getLegalMovesConsideringCheck(p, x, y, board);
+      for (const [mx, my] of moves) {
+        all.push({ from: [x, y], to: [mx, my], piece: p });
+      }
+    }
+  }
+  return all;
+}
+
+function evaluateGameStateAfterTurnSwitch() {
+  const sideToMove = current_player ? 'b' : 'w';
+
+  const inCheck = isKingInCheck(board, sideToMove);
+  const moves = getAllLegalMovesForColor(board, sideToMove);
+
+  if (moves.length === 0) {
+    if (inCheck) {
+      console.log('Checkmate!');
+    } else {
+      console.log('Stalemate!');
+    }
+    isGameActive = false;
+    return;
+  }
+
+  if (inCheck) {
+    console.log('Check!');
+  }
+}
+
 class Rook extends Piece {
   constructor(color) {
     super(color, 'r');
