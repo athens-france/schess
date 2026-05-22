@@ -8,6 +8,6 @@ TODO:
 - add knight: Done
 - add king: Done
 - add player turns and player clock
-- add checks and check mating
+- add checks and check mating: Done (hopefully)
 - add en passant, castling, fifty move rule, threefold repetition
 - idk should be done after that
