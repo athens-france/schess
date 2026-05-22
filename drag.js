@@ -3,6 +3,11 @@ let originalX = null;
 let originalY = null;
 let legalMoves = [];
 
+function clearHighlights() {
+  document.querySelectorAll('.grid-square.highlight').forEach(sq => {
+    sq.classList.remove('highlight');
+  });
+}
 
 function startDrag(e) {
   e.preventDefault(); // stop default browser dragging behavior 
@@ -22,7 +27,7 @@ function startDrag(e) {
   }
 
   // calculate legal moves
-  legalMoves = pieceObj.getLegalMoves(originalX, originalY, board);
+  legalMoves = getLegalMovesConsideringCheck(pieceObj, originalX, originalY, board);
 
   // highlight them
   document.querySelectorAll('.grid-square').forEach((sq, i) => {
@@ -55,7 +60,7 @@ function onDrag(e) {
 
 function endDrag(e) {
   if (!draggedPiece || !draggedPiece._clone) return;
-
+  clearHighlights();
   const clone = draggedPiece._clone;
   const squares = document.querySelectorAll('.grid-square');
 
@@ -87,6 +92,7 @@ function endDrag(e) {
 
         if (dropped) {
           switchTurn();
+          evaluateGameStateAfterTurnSwitch();
         }
       }
       break;
