@@ -235,27 +235,19 @@ class Knight extends Piece {
 
   getLegalMoves(x, y, board) {
     const moves = [];
-    // always 2 in one direction, 1 in another. L shape
-    const directions = [
-      [2, 1], [1, 2],
-      [-1, 2], [-2, 1],
-      [-2, -1], [-1, -2],
-      [1, -2], [2, -1]
+    const offsets = [
+      [2, 1], [1, 2], [-1, 2], [-2, 1],
+      [-2, -1], [-1, -2], [1, -2], [2, -1]
     ];
-    for (const [dx, dy] of directions) {
-      let cx = x + dx;
-      let cy = y + dy;
-      while (cx >= 0 && cx < 8 && cy >= 0 && cy < 8) {
-        if (board[cy][cx] === null) {
-          moves.push([cx, cy]); 
-        } else {
-          if (board[cy][cx].color !== this.color) {
-            moves.push([cx, cy]); 
-          }
-          break;
-        }
-        cx += dx;
-        cy += dy;
+
+    for (const [dx, dy] of offsets) {
+      const cx = x + dx;
+      const cy = y + dy;
+      if (cx < 0 || cx >= 8 || cy < 0 || cy >= 8) continue;
+
+      const target = board[cy][cx];
+      if (target === null || target.color !== this.color) {
+        moves.push([cx, cy]);
       }
     }
 
