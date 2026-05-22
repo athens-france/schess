@@ -8,6 +8,25 @@
 </head>
 <body>
 
+  <div id="clock-ui">
+    <div>
+      <strong>Black:</strong> <span id="black-time">0</span>
+      <span id="black-time"></span><span id="black-flag"></span>
+    </div>
+  
+    <div>
+      <label for="time-input">Start time (seconds):</label>
+      <input id="time-input" type="number" min="1" value="300" />
+      <button id="clock-start">Start Clocks</button>
+      <button id="clock-pause">Pause</button>
+      <button id="clock-reset">Reset</button>
+    </div>
+  
+    <div>
+      <strong>White:</strong> <span id="white-time">0</span>
+      <span id="white-time"></span><span id="white-flag"></span>
+    </div>
+  </div>
   <div id="grid" class="grid-container"></div>
 
   <div class="start-button">
