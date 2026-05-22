@@ -26,35 +26,41 @@ function findKing(board, color) {
   return null;
 }
 
+function getAttackSquares(piece, x, y, board) {
+  // pawn attacks differ from pawn moves
+  if (piece.type === 'p') {
+    const dir = piece.color === 'w' ? -1 : 1;
+    return [
+      [x - 1, y + dir],
+      [x + 1, y + dir],
+    ].filter(([cx, cy]) => cx >= 0 && cx < 8 && cy >= 0 && cy < 8);
+  }
+
+  if (piece.type === 'k') {
+    const out = [];
+    for (let dy = -1; dy <= 1; dy++) {
+      for (let dx = -1; dx <= 1; dx++) {
+        if (dx === 0 && dy === 0) continue;
+        const cx = x + dx, cy = y + dy;
+        if (cx >= 0 && cx < 8 && cy >= 0 && cy < 8) out.push([cx, cy]);
+      }
+    }
+    return out;
+  }
+
+  return piece.getLegalMoves(x, y, board);
+}
+
 function isSquareAttacked(board, targetX, targetY, byColor) {
   for (let y = 0; y < 8; y++) {
     for (let x = 0; x < 8; x++) {
       const p = board[y][x];
       if (!p || p.color !== byColor) continue;
 
-      if (p.type === 'p') {
-        const dir = byColor === 'w' ? -1 : 1;
-        const ax1 = x - 1, ay1 = y + dir;
-        const ax2 = x + 1, ay2 = y + dir;
-        if ((ax1 === targetX && ay1 === targetY) || (ax2 === targetX && ay2 === targetY)) {
-          return true;
-        }
-        continue;
+      const attacks = getAttackSquares(p, x, y, board);
+      if (attacks.some(([mx, my]) => mx === targetX && my === targetY)) {
+        return true;
       }
-
-      // king attacks adjacent squares (don’t recurse into “legal moves”)
-      if (p.type === 'k') {
-        for (let dy = -1; dy <= 1; dy++) {
-          for (let dx = -1; dx <= 1; dx++) {
-            if (dx === 0 && dy === 0) continue;
-            if (x + dx === targetX && y + dy === targetY) return true;
-          }
-        }
-        continue;
-      }
-
-      const attacks = p.getLegalMoves(x, y, board);
-      if (attacks.some(([mx, my]) => mx === targetX && my === targetY)) return true;
     }
   }
   return false;
@@ -337,6 +343,7 @@ function createPiece(code) {
   if (type == 'b') return new Bishop(color);
   if (type == 'q') return new Queen(color);
   if (type == 'n') return new Knight(color);
+  if (type == 'k') return new King(color);
   return new Piece(color, type); // other types are just garbage for now
 }
 
