@@ -134,13 +134,15 @@ function startGame() {
 function switchTurn() {
   current_player = !current_player;
   updateTurnDisplay();
+
+  // switch which clock is running
+  if (isGameActive) {
+    const sideToMove = current_player ? 'b' : 'w';
+    setActiveClock(sideToMove);
+  }
 }
 
 function updateTurnDisplay() {
   const playerName = current_player ? 'Black' : 'White';
   console.log(`${playerName}'s turn`);
-}
-
-function startTimer() {
-    
 }
