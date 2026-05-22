@@ -140,7 +140,7 @@ class Knight extends Piece {
           break;
         }
         cx += dx;
-        cy += cy;
+        cy += dy;
       }
     }
 
